@@ -1,11 +1,15 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 import mysql.connector
+import os
+
+# docker run -d -p 8000:8000 -e DB_PASSWORD="your_actual_password" tony219/blackjack-fastapi
+db_password = os.getenv("DB_PASSWORD")
 
 # Database connection configuration
 db_config = {
     'user': 'admin',
-    'password': 'pass',  # Replace with your actual MySQL root password
+    'password': db_password,  # Replace with your actual MySQL root password
     'host': 'cloudproject.crimg8c22499.us-east-2.rds.amazonaws.com',
     'database': 'blackjack',
 }
