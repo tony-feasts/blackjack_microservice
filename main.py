@@ -1,52 +1,39 @@
-from fastapi import FastAPI, HTTPException, Query
+# main.py
+
+from fastapi import FastAPI
+from middleware import LoggingMiddleware
+from routers import game_history, user_stats
 from fastapi.middleware.cors import CORSMiddleware
-import mysql.connector
-import os
 
-# docker run -d -p 8000:8000 -e DB_PASSWORD="your_actual_password" tony219/blackjack-fastapi
-db_password = os.getenv("DB_PASSWORD")
-
-# Database connection configuration
-db_config = {
-    'user': 'admin',
-    'password': db_password,  # Replace with your actual MySQL root password
-    'host': 'cloudproject.crimg8c22499.us-east-2.rds.amazonaws.com',
-    'database': 'blackjack',
-}
-
-# Initialize FastAPI app
 app = FastAPI()
 
+# Add CORS middleware (if needed)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # You can restrict to specific domains if needed
-    allow_credentials=True,
+    allow_origins=["*"],
     allow_methods=["*"],
-    allow_headers=["*"],
 )
 
-# Function to get a database connection
-def get_db_connection():
-    return mysql.connector.connect(**db_config)
+# Add logging middleware
+app.add_middleware(LoggingMiddleware)
 
-# Endpoint to get wins and losses by username
-@app.get("/get_scores/")
-def get_scores(username: str = Query(...)):
-    # Establish database connection
-    conn = get_db_connection()
-    cursor = conn.cursor()
+# Include routers
+app.include_router(game_history.router)
+app.include_router(user_stats.router)
 
-    try:
-        # Query the database for the user's scores
-        query = "SELECT wins, losses FROM records WHERE username = %s"
-        cursor.execute(query, (username,))
-        result = cursor.fetchone()
+# Error handling
+from fastapi.responses import JSONResponse
+from fastapi.requests import Request
+from fastapi.exceptions import HTTPException
 
-        if result:
-            wins, losses = result
-            return {"username": username, "wins": wins, "losses": losses}
-        else:
-            raise HTTPException(status_code=404, detail="User not found")
-    finally:
-        cursor.close()
-        conn.close()
+@app.exception_handler(HTTPException)
+def http_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"message": exc.detail}
+    )
+
+# Application entry point
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)

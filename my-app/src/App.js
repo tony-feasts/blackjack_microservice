@@ -10,7 +10,7 @@ function App() {
   const handleGetScores = async () => {
     try {
       // Make an API request to the FastAPI backend to get scores
-      const response = await axios.get('http://127.0.0.1:8000/get_scores', {
+      const response = await axios.get('http://18.218.69.88:8000/get_records', {
         params: {
           username: username,
         },
