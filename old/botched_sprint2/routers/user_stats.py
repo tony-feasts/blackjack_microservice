@@ -1,8 +1,8 @@
 # routers/user_stats.py
 
 from fastapi import APIRouter, HTTPException, Request
-from models import UserStats, Link
-from database import execute_query
+from old.botched_sprint2.models import UserStats
+from old.botched_sprint2.database import execute_query
 
 router = APIRouter()
 

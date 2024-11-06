@@ -1,9 +1,9 @@
 # routers/game_history.py
 
 from fastapi import APIRouter, HTTPException, Response, Query, Request
-from typing import List, Optional, Dict, Any
-from models import GameHistory, ResultEnum, Link
-from database import execute_query
+from typing import Optional, Dict, Any
+from old.botched_sprint2.models import GameHistory, ResultEnum
+from old.botched_sprint2.database import execute_query
 
 router = APIRouter()
 

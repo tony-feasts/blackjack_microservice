@@ -3,3 +3,4 @@ __pycache__
 .idea/
 blackjack_vm_key.pem
 .env
+old

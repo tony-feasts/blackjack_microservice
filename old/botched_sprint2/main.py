@@ -1,8 +1,8 @@
 # main.py
 
 from fastapi import FastAPI
-from middleware import LoggingMiddleware
-from routers import game_history, user_stats
+from old.botched_sprint2.middleware import LoggingMiddleware
+from old.botched_sprint2.routers import user_stats, game_history
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()

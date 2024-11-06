@@ -3,3 +3,6 @@ uvicorn==0.31.0
 mysql-connector-python==9.0.0
 pydantic==2.9.2
 python-dotenv==1.0.0
+httpx==0.25.0
+asyncio==3.4.3
+python-dotenv==1.0.0
