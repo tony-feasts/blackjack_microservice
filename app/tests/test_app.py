@@ -6,10 +6,10 @@ def conn():
     """Fixture to connect to the existing MySQL database."""
     # Replace these credentials with your MySQL database connection details
     connection = pymysql.connect(
-        host='localhost',  # Replace with your MySQL server's hostname
-        user='root',       # Replace with your MySQL username
-        password='dbuserdbuser',  # Replace with your MySQL password
-        database='blackjack',  # Replace with your database name
+        host='cloudproject.crimg8c22499.us-east-2.rds.amazonaws.com',
+        user='admin',
+        password='bupsij-xaRdab-bekcu6',
+        database='blackjack',
         autocommit=True
     )
     yield connection
@@ -48,10 +48,10 @@ def test_user_stats_vs_game_history(conn):
 if __name__ == "__main__":
     # Manual execution
     connection = pymysql.connect(
-        host='localhost',
-        user='root',
-        password='dbuserdbuser',
-        database='user',
+        host='cloudproject.crimg8c22499.us-east-2.rds.amazonaws.com',
+        user='admin',
+        password='bupsij-xaRdab-bekcu6',
+        database='blackjack',
         autocommit=True
     )
     try:

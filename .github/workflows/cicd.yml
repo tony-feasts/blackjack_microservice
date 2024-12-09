@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DB_USER: root
-      DB_PASSWORD: dbuserdbuser
-      DB_HOST: localhost
+      DB_USER: admin
+      DB_PASSWORD: bupsij-xaRdab-bekcu6
+      DB_HOST: cloudproject.crimg8c22499.us-east-2.rds.amazonaws.com
       DB_NAME: blackjack
 
     steps:
@@ -32,6 +32,7 @@ jobs:
       # Step 3: Install Dependencies
       - name: Install Dependencies
         run: |
+          pip install -r requirements.txt
           pip install pytest pymysql
 
       # Step 4: Run Tests
