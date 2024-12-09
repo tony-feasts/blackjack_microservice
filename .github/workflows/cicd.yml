@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-      - CI/CD
+      - CICD-pipeline
   pull_request:
     branches:
       - main
-      - CI/CD
+      - CICD-pipeline
 
 jobs:
   test-and-deploy:
