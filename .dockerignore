@@ -1,0 +1,6 @@
+__pycache__
+.DS_Store
+.idea/
+blackjack_vm_key.pem
+.env
+old

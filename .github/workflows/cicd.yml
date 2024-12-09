@@ -1,0 +1,65 @@
+name: CI/CD Pipeline for Blackjack Tests
+
+on:
+  push:
+    branches:
+      - main
+      - CI/CD
+  pull_request:
+    branches:
+      - main
+      - CI/CD
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+
+      # Step 3: Install Dependencies
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pymysql
+
+      # Step 4: Run Tests
+      - name: Run Test Suite
+        run: |
+          pytest app/tests/test_app.py -v
+
+      # Step 5: Deploy to EC2
+      - name: Deploy to EC2
+        env:
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+        run: |
+          echo "$EC2_PRIVATE_KEY" > deploy_key.pem
+          chmod 400 deploy_key.pem
+          echo "Creating directory on EC2..."
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "mkdir -p /home/$EC2_USER/application" || echo "Failed to create directory"
+          echo "Transferring files to EC2..."
+          scp -i deploy_key.pem -o StrictHostKeyChecking=no -r ./ $EC2_USER@$EC2_HOST:/home/$EC2_USER/application || echo "SCP failed"
+          echo "Running commands on EC2..."
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+          cd /home/$EC2_USER/application
+          source venv/bin/activate || python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt || echo "Pip install failed"
+          nohup python3 app/main.py > app.log 2>&1 || echo "Failed to start application"
+          EOF || echo "SSH commands failed"
