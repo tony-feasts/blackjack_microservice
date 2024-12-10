@@ -49,7 +49,7 @@ jobs:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
         run: |
-          echo "Testing pipeline"
+          echo "Testing the CI/CD pipeline"
           echo "$EC2_PRIVATE_KEY" > deploy_key.pem
           chmod 400 deploy_key.pem
           echo "Creating directory on EC2..."
